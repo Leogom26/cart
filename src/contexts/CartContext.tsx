@@ -1,11 +1,11 @@
 import { createContext, ReactNode, useState  } from 'react'
-import { ProductProps } from '../pages/home'
+import { ProductProps } from './../@/types/Product'
 
 interface CartContextData {
   cart: CartProps[];
   cartAmount: number;
-  addItemCart: (newItem: ProductProps) => void;
-  removeItemCart: (product: CartProps) => void;
+  addItemCart: (newItem: ProductProps) => void; // eslint-disable-line
+  removeItemCart: (product: CartProps) => void; // eslint-disable-line no-unused-vars
   total: string;
 }
 
@@ -33,12 +33,14 @@ export default  function CartProvider({ children }: CartProviderProps){
     const indexItem = cart.findIndex(item => item.id === newItem.id)
 
     if(indexItem !== -1){
-      const cartList = cart;
+      const cartList = [...cart];
+      cartList[indexItem] = {
+        ...cartList[indexItem],
+        amount: cartList[indexItem].amount + 1,
+        total: (cartList[indexItem].amount + 1) * cartList[indexItem].price
+      };
 
-      cartList[indexItem].amount = cartList[indexItem].amount + 1;
-      cartList[indexItem].total = cartList[indexItem].amount * cartList[indexItem].price;
-
-      setCart(cartList)
+      setCart(cartList);
       totalResultCart(cartList);
       return;
     }
